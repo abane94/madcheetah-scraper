@@ -18,13 +18,15 @@ Web scraper service with daily scheduling capabilities.
 2. Import the service module in your NixOS configuration:
 
 ```nix
+{ inputs, ... }:
 {
   imports = [
-    madcheetah-scraper.nixosModules.default
+    inputs.madcheetah-scraper.nixosModules.default
   ];
 
   services.madcheetah-scraper = {
     enable = true;
+    package = inputs.madcheetah-scraper.packages.${pkgs.system}.default;
     port = 3000;
     user = "madcheetah";
     dataDir = "/var/lib/madcheetah-scraper";

@@ -4,45 +4,16 @@ with lib;
 
 let
   cfg = config.services.madcheetah-scraper;
-
-  src = pkgs.fetchFromGitHub {
-    owner = cfg.github.owner;
-    repo = cfg.github.repo;
-    rev = cfg.github.rev;
-    sha256 = lib.fakeSha256;  # Replace with actual hash after first build
-  };
-
-  package = pkgs.stdenv.mkDerivation {
-    pname = "madcheetah-scraper";
-    version = "dev";
-    inherit src;
-
-    buildInputs = [ pkgs.nodejs pkgs.npm ];
-
-    buildPhase = ''
-      npm ci --production=false
-    '';
-
-    installPhase = ''
-      mkdir -p $out
-      cp -r . $out/
-
-      # Create wrapper script
-      mkdir -p $out/bin
-      cat > $out/bin/madcheetah-scraper <<EOF
-      #!/bin/sh
-      cd $out
-      export NODE_ENV=development
-      exec ${pkgs.nodejs}/bin/npm run server
-      EOF
-      chmod +x $out/bin/madcheetah-scraper
-    '';
-  };
 in
 
 {
   options.services.madcheetah-scraper = {
     enable = mkEnableOption "MadCheetah Scraper service";
+
+    package = mkOption {
+      type = types.package;
+      description = "MadCheetah Scraper package to use";
+    };
 
     user = mkOption {
       type = types.str;
@@ -73,25 +44,6 @@ in
       default = null;
       description = "Environment file containing secrets";
     };
-
-    # New option for GitHub repo details
-    github = {
-      owner = mkOption {
-        type = types.str;
-        description = "GitHub repository owner";
-      };
-
-      repo = mkOption {
-        type = types.str;
-        description = "GitHub repository name";
-      };
-
-      rev = mkOption {
-        type = types.str;
-        default = "main";
-        description = "Git revision to use";
-      };
-    };
   };
 
   config = mkIf cfg.enable {
@@ -114,7 +66,7 @@ in
         User = cfg.user;
         Group = cfg.group;
         WorkingDirectory = cfg.dataDir;
-        ExecStart = "${package}/bin/madcheetah-scraper";
+        ExecStart = "${cfg.package}/bin/madcheetah-scraper";
         Restart = "on-failure";
         RestartSec = "5s";
 
