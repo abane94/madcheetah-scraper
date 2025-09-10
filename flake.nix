@@ -21,8 +21,10 @@
 
           buildInputs = [ pkgs.chromium ];
 
-          # Skip Puppeteer's Chromium download since we provide it
-          preBuild = ''
+          # Set environment variables before npm install
+          npmFlags = [ "--offline" ];
+
+          prePatch = ''
             export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
             export PUPPETEER_SKIP_DOWNLOAD=1
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
