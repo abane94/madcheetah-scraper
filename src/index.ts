@@ -26,13 +26,15 @@ app.route('/', apiApp);
 const hostname = process.env.HOSTNAME || 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
 
-serve({
-  fetch: app.fetch,
-  port: port,
-  hostname: hostname
-}, (info) => {
-  console.log(`Server is running on http://${hostname}:${info.port}`)
-})
+// serve({
+//   fetch: app.fetch,
+//   port: port,
+//   hostname: hostname
+// }, (info) => {
+//   console.log(`Server is running on http://${hostname}:${info.port}`)
+// })
+
+export default app
 
 async function startup() {
   // Clean up old search runs on startup
