@@ -20,6 +20,7 @@
           npmDepsHash = "sha256-xc5YEv9VsX89zSXIwPyvino0+RjJ/bCo4l0D5Nj6hIQ=";
 
           buildInputs = [ pkgs.chromium pkgs.bash ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
 
           # Set environment variables before npm install
           npmFlags = [ "--offline" ];
@@ -42,18 +43,15 @@
             mkdir -p $out
             cp -r . $out/
 
-            # Create wrapper script
+            # Create wrapper script with full paths
             mkdir -p $out/bin
-            cat > $out/bin/madcheetah-scraper <<EOF
-            #!/bin/sh
-            cd $out
-            export NODE_ENV=production
-            export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-            export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
-            export PUPPETEER_SKIP_DOWNLOAD=1
-            exec ${pkgs.nodejs_20}/bin/npm run server
-            EOF
-            chmod +x $out/bin/madcheetah-scraper
+            makeWrapper ${pkgs.nodejs_20}/bin/npm $out/bin/madcheetah-scraper \
+              --chdir $out \
+              --set NODE_ENV production \
+              --set PUPPETEER_EXECUTABLE_PATH ${pkgs.chromium}/bin/chromium \
+              --set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1 \
+              --set PUPPETEER_SKIP_DOWNLOAD 1 \
+              --add-flags "run server"
 
             runHook postInstall
           '';
