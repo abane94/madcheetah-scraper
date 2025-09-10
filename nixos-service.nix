@@ -33,6 +33,12 @@ in
       description = "Directory to store application data";
     };
 
+    imagesDir = mkOption {
+      type = types.path;
+      default = "/var/lib/madcheetah-scraper/images";
+      description = "Directory to store scraped images";
+    };
+
     port = mkOption {
       type = types.port;
       default = 3000;
@@ -74,7 +80,7 @@ in
         NoNewPrivileges = true;
         PrivateTmp = true;
         ProtectSystem = "strict";
-        ReadWritePaths = [ cfg.dataDir "/tmp" ];
+        ReadWritePaths = [ cfg.dataDir cfg.imagesDir "/tmp" ];
 
         # Allow access to devices needed by Chromium
         PrivateDevices = false;
@@ -89,10 +95,20 @@ in
           "DISPLAY=:99"
           "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1"
           "PUPPETEER_SKIP_DOWNLOAD=1"
+          "DATA_DIR=${cfg.dataDir}"
+          "IMAGES_DIR=${cfg.imagesDir}"
         ];
       } // optionalAttrs (cfg.environmentFile != null) {
         EnvironmentFile = cfg.environmentFile;
       };
+
+      preStart = ''
+        # Ensure directories exist with correct permissions
+        mkdir -p ${cfg.dataDir}
+        mkdir -p ${cfg.imagesDir}
+        chown ${cfg.user}:${cfg.group} ${cfg.dataDir}
+        chown ${cfg.user}:${cfg.group} ${cfg.imagesDir}
+      '';
     };
 
     # Daily restart timer at 2 AM

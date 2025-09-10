@@ -176,13 +176,13 @@ export class Scraper {
                     const lotImages:string[]  = [];
 
                     // Ensure images directory exists
-                    const imagesDir = './images';
+                    const imagesDir = process.env.IMAGES_DIR || './images';
                     await mkdir(imagesDir, { recursive: true });
 
                     for (let i = 0; i < thumbnailCount; i++) {
                         const imageUrl = imageUrls[i];
                         const filename = `lot_${lot.lotId}_image_${i + 1}.jpg`;
-                        const filepath = `./images/${filename}`;
+                        const filepath = `${imagesDir}/${filename}`;
 
                         try {
                             const response = await fetch(imageUrl);

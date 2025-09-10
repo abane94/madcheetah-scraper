@@ -26,17 +26,23 @@ app.route('/', apiApp);
 const hostname = process.env.HOSTNAME || 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
 
-// serve({
-//   fetch: app.fetch,
-//   port: port,
-//   hostname: hostname
-// }, (info) => {
-//   console.log(`Server is running on http://${hostname}:${info.port}`)
-// })
+serve({
+  fetch: app.fetch,
+  port: port,
+  hostname: hostname
+}, (info) => {
+  console.log(`Server is running on http://${hostname}:${info.port}`)
+})
 
 export default app
 
 async function startup() {
+  // Log configured directories
+  const dataDir = process.env.DATA_DIR || './data';
+  const imagesDir = process.env.IMAGES_DIR || './images';
+  console.log(`Data directory: ${dataDir}`);
+  console.log(`Images directory: ${imagesDir}`);
+
   // Clean up old search runs on startup
   await cleanupOldSearchRuns();
 
