@@ -74,13 +74,20 @@ in
         NoNewPrivileges = true;
         PrivateTmp = true;
         ProtectSystem = "strict";
-        ProtectHome = true;
-        ReadWritePaths = [ cfg.dataDir ];
+        ReadWritePaths = [ cfg.dataDir "/tmp" ];
+
+        # Allow access to devices needed by Chromium
+        PrivateDevices = false;
+        ProtectKernelModules = true;
+        ProtectKernelTunables = true;
+        ProtectControlGroups = true;
 
         # Environment
         Environment = [
           "PORT=${toString cfg.port}"
           "NODE_ENV=production"
+          "DISPLAY=:99"
+          "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1"
         ];
       } // optionalAttrs (cfg.environmentFile != null) {
         EnvironmentFile = cfg.environmentFile;

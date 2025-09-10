@@ -17,7 +17,15 @@
           version = "dev";
           src = ./.;
 
-          npmDepsHash = "sha256-xc5YEv9VsX89zSXIwPyvino0+RjJ/bCo4l0D5Nj6hIQ="; # Replace with actual hash after first build
+          npmDepsHash = "sha256-xc5YEv9VsX89zSXIwPyvino0+RjJ/bCo4l0D5Nj6hIQ=";
+
+          buildInputs = [ pkgs.chromium ];
+
+          # Skip Puppeteer's Chromium download since we provide it
+          preBuild = ''
+            export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+            export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
+          '';
 
           buildPhase = ''
             runHook preBuild
@@ -37,6 +45,8 @@
             #!/bin/sh
             cd $out
             export NODE_ENV=production
+            export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
+            export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
             exec ${pkgs.nodejs_20}/bin/npm run server
             EOF
             chmod +x $out/bin/madcheetah-scraper
@@ -51,7 +61,11 @@
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [ pkgs.nodejs_20 ];
+          buildInputs = [ pkgs.nodejs_20 pkgs.chromium ];
+          shellHook = ''
+            export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+            export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
+          '';
         };
       }
     ) // {

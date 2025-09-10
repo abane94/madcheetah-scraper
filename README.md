@@ -1,6 +1,6 @@
 # MadCheetah Scraper
 
-Web scraper service with daily scheduling capabilities.
+Web scraper service with daily scheduling capabilities using Puppeteer and Chromium.
 
 ## NixOS Deployment
 
@@ -36,6 +36,8 @@ Web scraper service with daily scheduling capabilities.
 ```
 
 3. The service will automatically restart daily at 2 AM.
+
+**Note:** The service includes Chromium for web scraping functionality and runs in headless mode.
 
 ## Development
 
