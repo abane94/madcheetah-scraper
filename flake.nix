@@ -17,7 +17,7 @@
           version = "dev";
           src = ./.;
 
-          npmDepsHash = lib.fakeHash;
+          npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
           buildInputs = [ pkgs.chromium pkgs.bash ];
           nativeBuildInputs = [ pkgs.makeWrapper ];
