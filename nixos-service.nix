@@ -88,6 +88,7 @@ in
           "NODE_ENV=production"
           "DISPLAY=:99"
           "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1"
+          "PUPPETEER_SKIP_DOWNLOAD=1"
         ];
       } // optionalAttrs (cfg.environmentFile != null) {
         EnvironmentFile = cfg.environmentFile;

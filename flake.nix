@@ -24,6 +24,7 @@
           # Skip Puppeteer's Chromium download since we provide it
           preBuild = ''
             export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+            export PUPPETEER_SKIP_DOWNLOAD=1
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
           '';
 
@@ -47,6 +48,7 @@
             export NODE_ENV=production
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
             export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+            export PUPPETEER_SKIP_DOWNLOAD=1
             exec ${pkgs.nodejs_20}/bin/npm run server
             EOF
             chmod +x $out/bin/madcheetah-scraper
@@ -64,6 +66,7 @@
           buildInputs = [ pkgs.nodejs_20 pkgs.chromium ];
           shellHook = ''
             export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+            export PUPPETEER_SKIP_DOWNLOAD=1
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
           '';
         };
