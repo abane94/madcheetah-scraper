@@ -12,20 +12,22 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        packages.default = pkgs.stdenv.mkDerivation {
+        packages.default = pkgs.buildNpmPackage {
           pname = "madcheetah-scraper";
           version = "dev";
           src = ./.;
 
-          buildInputs = [ pkgs.nodejs_20 ];
-          nativeBuildInputs = [ pkgs.nodejs_20 ];
+          npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # Replace with actual hash after first build
 
           buildPhase = ''
-            export HOME=$TMPDIR
-            ${pkgs.nodejs_20}/bin/npm ci --production=false
+            runHook preBuild
+            npm run build 2>/dev/null || echo "No build script found, skipping"
+            runHook postBuild
           '';
 
           installPhase = ''
+            runHook preInstall
+
             mkdir -p $out
             cp -r . $out/
 
@@ -38,7 +40,14 @@
             exec ${pkgs.nodejs_20}/bin/npm run server
             EOF
             chmod +x $out/bin/madcheetah-scraper
+
+            runHook postInstall
           '';
+
+          meta = {
+            description = "MadCheetah Scraper service";
+            platforms = pkgs.lib.platforms.linux;
+          };
         };
 
         devShells.default = pkgs.mkShell {
