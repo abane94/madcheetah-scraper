@@ -19,7 +19,7 @@
 
           npmDepsHash = "sha256-xc5YEv9VsX89zSXIwPyvino0+RjJ/bCo4l0D5Nj6hIQ=";
 
-          buildInputs = [ pkgs.chromium ];
+          buildInputs = [ pkgs.chromium pkgs.bash ];
 
           # Set environment variables before npm install
           npmFlags = [ "--offline" ];
@@ -65,7 +65,7 @@
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [ pkgs.nodejs_20 pkgs.chromium ];
+          buildInputs = [ pkgs.bash pkgs.nodejs_20 pkgs.chromium ];
           shellHook = ''
             export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
             export PUPPETEER_SKIP_DOWNLOAD=1
