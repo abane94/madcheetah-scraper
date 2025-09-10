@@ -1,10 +1,15 @@
 {
   "name": "madcheetah-scraper",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Web scraper service with daily scheduling",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.tsx",
+    "dev": "tsx watch src/index.ts",
+    "server": "tsx src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",

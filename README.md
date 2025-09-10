@@ -1,5 +1,44 @@
+# MadCheetah Scraper
+
+Web scraper service with daily scheduling capabilities.
+
+## NixOS Deployment
+
+1. Add this flake as an input to your NixOS configuration:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    madcheetah-scraper.url = "github:abane94/madcheetah-scraper";
+  };
+}
 ```
-npm install
+
+2. Import the service module in your NixOS configuration:
+
+```nix
+{
+  imports = [
+    madcheetah-scraper.nixosModules.default
+  ];
+
+  services.madcheetah-scraper = {
+    enable = true;
+    port = 3000;
+    user = "madcheetah";
+    dataDir = "/var/lib/madcheetah-scraper";
+    environmentFile = "/etc/madcheetah-scraper/env"; # Optional
+  };
+}
+```
+
+3. The service will automatically restart daily at 2 AM.
+
+## Development
+
+```bash
+nix develop
 npm run dev
 ```
 
