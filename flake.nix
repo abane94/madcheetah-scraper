@@ -17,10 +17,12 @@
           version = "dev";
           src = ./.;
 
-          buildInputs = [ pkgs.nodejs pkgs.npm ];
+          buildInputs = [ pkgs.nodejs_20 ];
+          nativeBuildInputs = [ pkgs.nodejs_20 ];
 
           buildPhase = ''
-            npm ci --production=false
+            export HOME=$TMPDIR
+            ${pkgs.nodejs_20}/bin/npm ci --production=false
           '';
 
           installPhase = ''
@@ -33,14 +35,14 @@
             #!/bin/sh
             cd $out
             export NODE_ENV=production
-            exec ${pkgs.nodejs}/bin/npm run server
+            exec ${pkgs.nodejs_20}/bin/npm run server
             EOF
             chmod +x $out/bin/madcheetah-scraper
           '';
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [ pkgs.nodejs pkgs.npm ];
+          buildInputs = [ pkgs.nodejs_20 ];
         };
       }
     ) // {
