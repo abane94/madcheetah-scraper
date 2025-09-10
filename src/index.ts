@@ -36,11 +36,11 @@ serve({
 
 async function startup() {
   // Clean up old search runs on startup
-  // await cleanupOldSearchRuns();
+  await cleanupOldSearchRuns();
 
-  // // Clean up expired lots on startup
-  // await cleanupExpiredLots();
+  // Clean up expired lots on startup
+  await cleanupExpiredLots();
 
-  // // Run daily searches check on startup
-  // await checkAndRunDailySearches();
+  // Run daily searches check on startup
+  await checkAndRunDailySearches();
 }

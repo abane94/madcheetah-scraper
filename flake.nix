@@ -17,7 +17,7 @@
           version = "dev";
           src = ./.;
 
-          npmDepsHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # Replace with actual hash after first build
+          npmDepsHash = "sha256-xc5YEv9VsX89zSXIwPyvino0+RjJ/bCo4l0D5Nj6hIQ="; # Replace with actual hash after first build
 
           buildPhase = ''
             runHook preBuild
