@@ -48,6 +48,7 @@
             mkdir -p $out/bin
             makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/madcheetah-scraper \
               --chdir $out \
+              --run "echo 'Printing data dir before node' && echo $DATA_DIR" \
               --add-flags "dist/index.js"
 
             runHook postInstall
