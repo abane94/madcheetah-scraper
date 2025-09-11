@@ -1,19 +1,17 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { readLots } from './api.ts'
-import { main } from './web-scraper/main.ts'
 import apiApp from './api.ts'
 import { cleanupOldSearchRuns, cleanupExpiredLots } from './utils/cleanup.ts'
 import { checkAndRunDailySearches } from './utils/daily-search-runner.ts'
 import webRoutes from './routes/web-routes.tsx'
+import { DATA_DIR, IMAGES_DIR } from './env.ts'
+
+
+// Log configured directories
+console.log(`Data directory: ${DATA_DIR}`);
+console.log(`Images directory: ${IMAGES_DIR}`);
 
 startup();
-
-// let lots = readLots();
-// if (!lots || lots.length < 1) {
-//   await main()
-//   lots = readLots();
-// }
 
 const app = new Hono()
 
@@ -37,11 +35,6 @@ serve({
 export default app
 
 async function startup() {
-  // Log configured directories
-  const dataDir = process.env.DATA_DIR || './data';
-  const imagesDir = process.env.IMAGES_DIR || './images';
-  console.log(`Data directory: ${dataDir}`);
-  console.log(`Images directory: ${imagesDir}`);
 
   // Clean up old search runs on startup
   await cleanupOldSearchRuns();

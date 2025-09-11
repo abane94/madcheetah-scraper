@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
+import { DATA_DIR } from '../env';
 
 export interface DbDocument {
     id: string;
@@ -181,4 +182,4 @@ export class JsonDatabase {
 }
 
 // Default instance
-export const db = new JsonDatabase();
+export const db = new JsonDatabase(DATA_DIR);

@@ -3,6 +3,7 @@ import { startBrowser, navigateToPage, closeBrowser, sleep } from "../utils/pupp
 import type { Lot, Search } from "../../shared/types.ts";
 import { writeFile, mkdir } from 'node:fs/promises';
 import type { Page } from 'puppeteer';
+import { IMAGES_DIR } from "../../env.ts";
 
 export interface ScrapeResult {
     lots: Lot[];
@@ -176,7 +177,7 @@ export class Scraper {
                     const lotImages:string[]  = [];
 
                     // Ensure images directory exists
-                    const imagesDir = process.env.IMAGES_DIR || './images';
+                    const imagesDir = IMAGES_DIR;
                     await mkdir(imagesDir, { recursive: true });
 
                     for (let i = 0; i < thumbnailCount; i++) {
