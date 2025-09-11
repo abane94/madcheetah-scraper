@@ -95,8 +95,15 @@ in
           "DISPLAY=:99"
           "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1"
           "PUPPETEER_SKIP_DOWNLOAD=1"
+          "PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium"
           "DATA_DIR=${cfg.dataDir}"
           "IMAGES_DIR=${cfg.imagesDir}"
+        ];
+
+        # Alternative: Use ExecStartPre to export variables
+        ExecStartPre = [
+          "${pkgs.coreutils}/bin/env"
+          "${pkgs.bash}/bin/bash -c 'echo Environment check: DATA_DIR=$DATA_DIR IMAGES_DIR=$IMAGES_DIR'"
         ];
       } // optionalAttrs (cfg.environmentFile != null) {
         EnvironmentFile = cfg.environmentFile;
@@ -104,14 +111,16 @@ in
 
       preStart = ''
         # Ensure directories exist with correct permissions
-        echo ${cfg.dataDir}
-        echo ${cfg.imagesDir}
+        echo "Setting up directories: ${cfg.dataDir}, ${cfg.imagesDir}"
         mkdir -p ${cfg.dataDir}
         mkdir -p ${cfg.imagesDir}
-        export DATA_DIR=${cfg.dataDir}
-        export IMAGES_DIR=${cfg.imagesDir}
         chown ${cfg.user}:${cfg.group} ${cfg.dataDir}
         chown ${cfg.user}:${cfg.group} ${cfg.imagesDir}
+
+        # Debug environment
+        echo "Environment variables being set:"
+        echo "DATA_DIR=${cfg.dataDir}"
+        echo "IMAGES_DIR=${cfg.imagesDir}"
       '';
     };
 

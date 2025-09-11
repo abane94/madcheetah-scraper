@@ -48,8 +48,6 @@
             mkdir -p $out/bin
             makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/madcheetah-scraper \
               --chdir $out \
-              --run 'export DATA_DIR=''${DATA_DIR:-./data}' \
-              --run 'export IMAGES_DIR=''${IMAGES_DIR:-./images}' \
               --run 'export PORT=''${PORT:-3000}' \
               --set NODE_ENV production \
               --set PUPPETEER_EXECUTABLE_PATH ${pkgs.chromium}/bin/chromium \
@@ -72,8 +70,6 @@
             export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
             export PUPPETEER_SKIP_DOWNLOAD=1
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-            export DATA_DIR=./data
-            export IMAGES_DIR=./images
 
             echo "MadCheetah Scraper development environment ready!"
             echo "Run 'npm run dev' or 'npm start' to start the service"
