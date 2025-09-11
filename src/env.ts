@@ -1,13 +1,18 @@
-const node_env = {};
-Object.keys(process.env).forEach(key => node_env[key] = process.env[key]);
+// const node_env = {};
+// Object.keys(process.env).forEach(key => {
+//     node_env[key] = process.env[key]
+//     console.log('Node env var key: ' + key);
+// });
 
-console.log(process.env.NODE_ENV);
+console.log("argv: " + process.argv);
 
-console.log("Node's env", JSON.stringify(node_env));
+console.log("NODE_ENV: " + process.env.NODE_ENV);
+
+console.log("Node's env", JSON.stringify(process.env));
 const data = process.env.DATA_DIR;
 const images = process.env.IMAGES_DIR
-console.log(`Data env-var: ${data}`);
-console.log(`Images env-var: ${images}`);
+console.log(`Data env-var: ${data} - ${process.env.data_dir}`);
+console.log(`Images env-var: ${images} - ${process.env.images_dir}`);
 
 
 export const DATA_DIR = data || './data';

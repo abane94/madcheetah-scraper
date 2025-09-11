@@ -10,6 +10,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        dataDirCmd = "echo $DATA_DIR";
       in
       {
         packages.default = pkgs.buildNpmPackage {
@@ -48,8 +49,13 @@
             mkdir -p $out/bin
             makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/madcheetah-scraper \
               --chdir $out \
-              --run "echo 'Printing data dir before node' && echo \\$DATA_DIR" \
-              --add-flags "dist/index.js"
+              --run "echo 'Printing data dir before node' && echo \$DATA_DIR" \
+              --run "echo \$DATA_DIR" \
+              --run "echo \$IMAGES_DIR" \
+              --run "echo 'after'" \
+              --add-flags "dist/index.js" \
+              --add-flags "--imgDir=\$IMAGES_DIR" \
+              --add-flags "--dataDir=\$DATA_DIR"
 
             runHook postInstall
           '';
