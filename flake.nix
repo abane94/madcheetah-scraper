@@ -48,10 +48,6 @@
             mkdir -p $out/bin
             makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/madcheetah-scraper \
               --chdir $out \
-              # --set NODE_ENV production \
-              # --set PUPPETEER_EXECUTABLE_PATH ${pkgs.chromium}/bin/chromium \
-              # --set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1 \
-              # --set PUPPETEER_SKIP_DOWNLOAD 1 \
               --add-flags "dist/index.js"
 
             runHook postInstall
