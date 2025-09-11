@@ -108,6 +108,8 @@ in
         echo ${cfg.imagesDir}
         mkdir -p ${cfg.dataDir}
         mkdir -p ${cfg.imagesDir}
+        export DATA_DIR=${cfg.dataDir}
+        export IMAGES_DIR=${cfg.imagesDir}
         chown ${cfg.user}:${cfg.group} ${cfg.dataDir}
         chown ${cfg.user}:${cfg.group} ${cfg.imagesDir}
       '';
