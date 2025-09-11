@@ -1,6 +1,8 @@
 const node_env = {};
 Object.keys(process.env).forEach(key => node_env[key] = process.env[key]);
 
+console.log(process.env.NODE_ENV);
+
 console.log("Node's env", JSON.stringify(node_env));
 const data = process.env.DATA_DIR;
 const images = process.env.IMAGES_DIR
