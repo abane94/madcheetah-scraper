@@ -96,6 +96,7 @@ in
           "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1"
           "PUPPETEER_SKIP_DOWNLOAD=1"
           "PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium"
+          "MY_TEST_VAR=hello-there"
           "DATA_DIR=${cfg.dataDir}"
           "IMAGES_DIR=${cfg.imagesDir}"
         ];
