@@ -4,12 +4,6 @@ import apiApp from './api.ts'
 import { cleanupOldSearchRuns, cleanupExpiredLots } from './utils/cleanup.ts'
 import { checkAndRunDailySearches } from './utils/daily-search-runner.ts'
 import webRoutes from './routes/web-routes.tsx'
-import { DATA_DIR, IMAGES_DIR } from './env.ts'
-
-
-// Log configured directories
-console.log(`Data directory: ${DATA_DIR}`);
-console.log(`Images directory: ${IMAGES_DIR}`);
 
 startup();
 

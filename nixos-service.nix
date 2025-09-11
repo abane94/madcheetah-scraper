@@ -104,6 +104,8 @@ in
 
       preStart = ''
         # Ensure directories exist with correct permissions
+        echo ${cfg.dataDir}
+        echo ${cfg.imagesDir}
         mkdir -p ${cfg.dataDir}
         mkdir -p ${cfg.imagesDir}
         chown ${cfg.user}:${cfg.group} ${cfg.dataDir}

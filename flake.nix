@@ -71,6 +71,9 @@
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
             export DATA_DIR=./data
             export IMAGES_DIR=./images
+
+            echo "MadCheetah Scraper development environment ready!"
+            echo "Run 'npm run dev' or 'npm start' to start the service"
           '';
         };
       }
