@@ -48,6 +48,9 @@
             mkdir -p $out/bin
             makeWrapper ${pkgs.nodejs_20}/bin/node $out/bin/madcheetah-scraper \
               --chdir $out \
+              --run 'export DATA_DIR=''${DATA_DIR:-./data}' \
+              --run 'export IMAGES_DIR=''${IMAGES_DIR:-./images}' \
+              --run 'export PORT=''${PORT:-3000}' \
               --set NODE_ENV production \
               --set PUPPETEER_EXECUTABLE_PATH ${pkgs.chromium}/bin/chromium \
               --set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1 \
