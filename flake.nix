@@ -54,6 +54,7 @@
               --run "echo \$IMAGES_DIR" \
               --run "echo 'after'" \
               --add-flags "dist/index.js" \
+              --add-flags "--chromePath=\$PUPPETEER_EXECUTABLE_PATH" \
               --add-flags "--imgDir=\$IMAGES_DIR" \
               --add-flags "--dataDir=\$DATA_DIR"
 
