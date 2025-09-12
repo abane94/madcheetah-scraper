@@ -3,6 +3,7 @@ import path from 'path'
 import { readLots } from '../api.ts'
 import type { SearchRuns, Lot } from '../shared/types.ts'
 import { db } from '../shared/db.ts'
+import { IMAGES_DIR } from '../env.ts'
 
 const SEARCH_RUNS_COLLECTION = 'searchRuns';
 const SEARCH_RUNS_RETENTION_DAYS = 7;
@@ -66,7 +67,7 @@ export async function cleanupExpiredLots() {
         if (lot.imageFilenames && lot.imageFilenames.length > 0) {
             for (const imagePath of lot.imageFilenames) {
                 try {
-                    const fullImagePath = path.resolve(imagePath);
+                    const fullImagePath = path.join(IMAGES_DIR, imagePath);
                     await fs.unlink(fullImagePath);
                     console.log(`Deleted image: ${imagePath}`);
                 } catch (error) {
@@ -78,7 +79,7 @@ export async function cleanupExpiredLots() {
 
     // Check for orphan images
     console.log('Checking for orphan images...');
-    const imagesDir = path.resolve('images');
+    const imagesDir = IMAGES_DIR;
 
     try {
         const imageFiles = await fs.readdir(imagesDir);
