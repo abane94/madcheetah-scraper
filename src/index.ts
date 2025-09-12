@@ -18,13 +18,19 @@ app.route('/', apiApp);
 const hostname = process.env.HOSTNAME || 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
 
-serve({
-  fetch: app.fetch,
-  port: port,
-  hostname: hostname
-}, (info) => {
-  console.log(`Server is running on http://${hostname}:${info.port}`)
-})
+// Only start the server if this module is run directly (not through Vite)
+console.log(`import.meta.url: ${import.meta.url}`);
+console.log(`env.VITE: ${process.env.VITE}`);
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Running serve');
+  serve({
+    fetch: app.fetch,
+    port: port,
+    hostname: hostname
+  }, (info) => {
+    console.log(`Server is running on http://${hostname}:${info.port}`)
+  })
+}
 
 export default app
 

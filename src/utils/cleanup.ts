@@ -70,7 +70,7 @@ export async function cleanupExpiredLots() {
                     await fs.unlink(fullImagePath);
                     console.log(`Deleted image: ${imagePath}`);
                 } catch (error) {
-                    console.warn(`Failed to delete image ${imagePath}:`, error);
+                    console.warn(`Failed to delete image ${imagePath}:`);
                 }
             }
         }

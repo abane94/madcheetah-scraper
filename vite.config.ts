@@ -18,5 +18,13 @@ export default defineConfig({
     rollupOptions: {
       external: ['ws']
     }
-  }
+  },
+  server: {
+    host: '0.0.0.0', // or 'localhost', '127.0.0.1', or specific IP
+    port: 3000, // optional: specify port
+  },
+  preview: {
+    host: '0.0.0.0', // or 'localhost', '127.0.0.1', or specific IP
+    port: 4173, // optional: specify port
+  },
 })
