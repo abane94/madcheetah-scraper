@@ -7,8 +7,17 @@ export interface DbDocument {
     [key: string]: any;
 }
 
+interface CollectionCache<T extends DbDocument> {
+    data: T[];
+    timestamp: number;
+    requestCount: number;
+}
+
 export class JsonDatabase {
     private dataDir: string;
+    private cache: Map<string, CollectionCache<any>> = new Map();
+    private readonly CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+    private readonly CACHE_REQUEST_LIMIT = 50;
 
     constructor(dataDir: string = './data') {
         this.dataDir = dataDir;
@@ -25,14 +34,61 @@ export class JsonDatabase {
         return `${this.dataDir}/${collection}.json`;
     }
 
+    private isCacheValid(collection: string): boolean {
+        const cache = this.cache.get(collection);
+        if (!cache) return false;
+
+        const now = Date.now();
+        const cacheExpired = (now - cache.timestamp) > this.CACHE_DURATION;
+        const requestLimitReached = cache.requestCount >= this.CACHE_REQUEST_LIMIT;
+
+        return !cacheExpired && !requestLimitReached;
+    }
+
+    private getCachedData<T extends DbDocument>(collection: string): T[] | null {
+        if (!this.isCacheValid(collection)) {
+            return null;
+        }
+
+        const cache = this.cache.get(collection);
+        if (cache) {
+            cache.requestCount++;
+            return cache.data;
+        }
+        return null;
+    }
+
+    private setCacheData<T extends DbDocument>(collection: string, data: T[]): void {
+        this.cache.set(collection, {
+            data: [...data], // Create a copy to prevent mutation
+            timestamp: Date.now(),
+            requestCount: 1
+        });
+    }
+
+    private invalidateCache(collection: string): void {
+        this.cache.delete(collection);
+    }
+
     private readCollection<T extends DbDocument>(collection: string): T[] {
+        // Try cache first
+        const cachedData = this.getCachedData<T>(collection);
+        if (cachedData) {
+            return cachedData;
+        }
+
+        // Read from file and cache
         try {
             const filePath = this.getFilePath(collection);
             if (!existsSync(filePath)) {
-                return [];
+                const emptyData: T[] = [];
+                this.setCacheData(collection, emptyData);
+                return emptyData;
             }
             const data = readFileSync(filePath, 'utf-8');
-            return JSON.parse(data);
+            const parsedData: T[] = JSON.parse(data);
+            this.setCacheData(collection, parsedData);
+            return parsedData;
         } catch (error) {
             console.error(`Error reading collection ${collection}:`, error);
             return [];
@@ -47,8 +103,13 @@ export class JsonDatabase {
                 mkdirSync(dirPath, { recursive: true });
             }
             writeFileSync(filePath, JSON.stringify(data, null, 4));
+
+            // Update cache with new data
+            this.setCacheData(collection, data);
         } catch (error) {
             console.error(`Error writing collection ${collection}:`, error);
+            // Invalidate cache on write error
+            this.invalidateCache(collection);
             throw new Error(`Failed to save collection ${collection}`);
         }
     }
@@ -178,6 +239,29 @@ export class JsonDatabase {
 
     clear(collection: string): void {
         this.writeCollection(collection, []);
+    }
+
+    // Cache management
+    clearCache(collection?: string): void {
+        if (collection) {
+            this.invalidateCache(collection);
+        } else {
+            this.cache.clear();
+        }
+    }
+
+    getCacheStats(): { [collection: string]: { requestCount: number; age: number } } {
+        const stats: { [collection: string]: { requestCount: number; age: number } } = {};
+        const now = Date.now();
+
+        for (const [collection, cache] of this.cache.entries()) {
+            stats[collection] = {
+                requestCount: cache.requestCount,
+                age: now - cache.timestamp
+            };
+        }
+
+        return stats;
     }
 }
 

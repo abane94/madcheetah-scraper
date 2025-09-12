@@ -10,19 +10,23 @@ const webRoutes = new Hono()
 
 // Home page route with search and location filtering
 webRoutes.get('/', (c) => {
+    const begin = Date.now();
     const lots = readLots();
     const searches = readSearches();
     const locations = getUniqueLocations();
     const selectedSearchId = c.req.query('search');
     const selectedLocation = c.req.query('location');
 
-    return c.html(<LotsHomePage
+    const html = <LotsHomePage
         lots={lots}
         searches={searches}
         locations={locations}
         selectedSearchId={selectedSearchId}
         selectedLocation={selectedLocation}
-    />);
+    />;
+    console.log(`[TIME] Home request took ${Date.now() - begin} ms`)
+
+    return c.html(html);
 });
 
 // Lot detail page

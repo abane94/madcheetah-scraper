@@ -17,16 +17,35 @@ export function LotsHomePage({
     selectedSearchId?: string,
     selectedLocation?: string
 }) {
-    // Filter lots based on selected search and location
-    let filteredLots = lots;
+    // Helper function to filter and group lots in a single pass
+    const filterAndGroupLots = (
+        lots: Lot[],
+        searchId?: string,
+        location?: string
+    ): { filteredLots: Lot[], dayLots: Record<string, Lot[]> } => {
+        const filteredLots: Lot[] = [];
+        const dayLots: Record<string, Lot[]> = {};
 
-    if (selectedSearchId) {
-        filteredLots = filteredLots.filter(lot => lot.searchId === selectedSearchId);
-    }
+        for (const lot of lots) {
+            // Apply filters
+            if (searchId && lot.searchId !== searchId) continue;
+            if (location && lot.location !== location) continue;
 
-    if (selectedLocation) {
-        filteredLots = filteredLots.filter(lot => lot.location === selectedLocation);
-    }
+            // Add to filtered list
+            filteredLots.push(lot);
+
+            // Group by day
+            const endDate = new Date(lot.timestamp).toISOString().split('T')[0];
+            if (!dayLots[endDate]) {
+                dayLots[endDate] = [];
+            }
+            dayLots[endDate].push(lot);
+        }
+
+        return { filteredLots, dayLots };
+    };
+
+    const { filteredLots, dayLots } = filterAndGroupLots(lots, selectedSearchId, selectedLocation);
 
     const selectedSearch = selectedSearchId
         ? searches.find(s => s.id === selectedSearchId)
@@ -37,14 +56,6 @@ export function LotsHomePage({
         titleText += ` in ${selectedLocation}`;
     }
     titleText += ` (${filteredLots.length} lots)`;
-
-    const dayLots: Record<string, Lot[]> = {}
-    for (const lot of filteredLots) {
-        const endDate = new Date(lot.timestamp).toISOString().split('T')[0];
-        const existingLots = dayLots[endDate] || [];
-        existingLots.push(lot)
-        dayLots[endDate] = existingLots;
-    }
 
     return (
         <html>
@@ -125,7 +136,7 @@ export function LotsHomePage({
 
                 <div className="toc">
                     <ul>
-                        {Object.keys(dayLots).map(day => (
+                        {Object.keys(dayLots).sort().map(day => (
                             <a href={`#${day}`}><li>{new Date(`${day}T12:00:00`).toDateString()}</li></a>
                         ))}
                     </ul>

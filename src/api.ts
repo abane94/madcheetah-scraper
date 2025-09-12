@@ -38,13 +38,38 @@ export function updateSearch(search: Search): Search {
     return db.replaceById(SEARCHES_COLLECTION, search.id, search);
 }
 
+// Cache for unique locations
+let cachedLocations: string[] | null = null;
+let cacheTimestamp: number = 0;
+let cacheRequestCount: number = 0;
+const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+const CACHE_REQUEST_LIMIT = 10;
+
 export function getUniqueLocations(): string[] {
+    const now = Date.now();
+    const cacheExpired = (now - cacheTimestamp) > CACHE_DURATION;
+    const requestLimitReached = cacheRequestCount >= CACHE_REQUEST_LIMIT;
+
+    // Return cached data if valid
+    if (cachedLocations && !cacheExpired && !requestLimitReached) {
+        cacheRequestCount++;
+        return cachedLocations;
+    }
+
+    // Recalculate and cache
+    console.log('Busting location cache')
     const lots = readLots();
     const locations = lots
         .map(lot => lot.location)
         .filter(location => location && location.trim())
         .filter((location, index, arr) => arr.indexOf(location) === index)
         .sort();
+
+    // Update cache
+    cachedLocations = locations;
+    cacheTimestamp = now;
+    cacheRequestCount = 1;
+
     return locations;
 }
 

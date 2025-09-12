@@ -10,7 +10,7 @@ export async function checkAndRunDailySearches() {
     console.log('Checking if daily searches need to be run...');
 
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-    const searches = readSearches();
+    const searches = readSearches().sort((s1, s2) => (s1.name || s1.query).localeCompare(s2.name || s2.query));
 
     if (searches.length === 0) {
         console.log('No searches configured, skipping daily run');
