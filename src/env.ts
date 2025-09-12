@@ -18,9 +18,11 @@ const data = process.argv.find(arg => arg.startsWith('--dataDir='))?.replace('--
 const images = process.argv.find(arg => arg.startsWith('--imgDir='))?.replace('--imgDir=', '')
 const chromePath = process.argv.find(arg => arg.startsWith('--chromePath='))?.replace('--chromePath=', '')
 process.env.PUPPETEER_EXECUTABLE_PATH = chromePath;
+console.log(`chrome path: ${chromePath}`);
 
 export const DATA_DIR = data || './data';
 export const IMAGES_DIR = images || './images';
+export const CHROME_PATH = chromePath;
 // Log configured directories
 console.log(`Data directory: ${DATA_DIR}`);
 console.log(`Images directory: ${IMAGES_DIR}`);
