@@ -2,9 +2,10 @@ import { Hono } from 'hono'
 import { LotsHomePage } from '../templates/home.tsx'
 import { LotDetailPage } from '../templates/detail.tsx'
 import { SearchFormPage } from '../templates/search-form.tsx'
-import { readLots, readSearches, addSearch, getUniqueLocations } from '../api.ts'
+import { readLots, readSearches, addSearch, getUniqueLocations, readSearchRuns } from '../api.ts'
 import type { Search } from '../shared/types.ts'
 import { TERM_DELIMITER } from '../shared/types.ts'
+import { SearchRunsPage } from '../templates/search-runs.tsx'
 
 const webRoutes = new Hono()
 
@@ -17,12 +18,14 @@ webRoutes.get('/', (c) => {
     const selectedSearchId = c.req.query('search');
     const selectedLocation = c.req.query('location');
 
+    // Add link to search runs page by passing a prop
     const html = <LotsHomePage
         lots={lots}
         searches={searches}
         locations={locations}
         selectedSearchId={selectedSearchId}
         selectedLocation={selectedLocation}
+        showSearchRunsLink={true}
     />;
     console.log(`[TIME] Home request took ${Date.now() - begin} ms`)
 
@@ -172,6 +175,24 @@ webRoutes.post('/api/searches', async (c) => {
     } catch (error) {
         return c.json({ error: 'Invalid JSON or failed to save' }, 400);
     }
+});
+
+// New route: Search Runs page
+webRoutes.get('/search-runs', (c) => {
+    const searchRuns = readSearchRuns();
+    const searches = readSearches();
+    const fiveDaysAgo = Date.now() - 5 * 24 * 60 * 60 * 1000;
+    const recentRuns = searchRuns
+        .filter(r => {
+            const runTime = typeof r.date === 'number' ? r.date : Date.parse(r.date);
+            return runTime >= fiveDaysAgo;
+        })
+        .sort((a, b) => {
+            const aTime = typeof a.date === 'number' ? a.date : Date.parse(a.date);
+            const bTime = typeof b.date === 'number' ? b.date : Date.parse(b.date);
+            return bTime - aTime;
+        });
+    return c.html(<SearchRunsPage searchRuns={recentRuns} searches={searches} />);
 });
 
 export default webRoutes;

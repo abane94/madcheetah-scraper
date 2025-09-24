@@ -7,6 +7,7 @@ import webRoutes from './routes/web-routes.tsx'
 
 startup();
 
+console.log('Building web app');
 const app = new Hono()
 
 // Mount web routes
@@ -44,4 +45,5 @@ async function startup() {
 
   // Run daily searches check on startup
   await checkAndRunDailySearches();
+  console.log('Finished startup sequence');
 }

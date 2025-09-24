@@ -6,6 +6,7 @@ const app = new Hono();
 
 const LOTS_COLLECTION = 'lots';
 const SEARCHES_COLLECTION = 'searches';
+const SEARCH_RUNS_COLLECTION = 'searchRuns';
 
 export function readLots(): Lot[] {
     return db.findAll<Lot>(LOTS_COLLECTION);
@@ -13,6 +14,11 @@ export function readLots(): Lot[] {
 
 export function readSearches(): Search[] {
     return db.findAll<Search>(SEARCHES_COLLECTION) || [];
+}
+
+// Read all search runs
+export function readSearchRuns() {
+    return db.findAll(SEARCH_RUNS_COLLECTION) || [];
 }
 
 export function writeLots(lots: Lot[]): void {

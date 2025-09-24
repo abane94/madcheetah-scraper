@@ -3,9 +3,10 @@ import { CHROME_PATH } from "../../env";
 
 export async function startBrowser(): Promise<Browser> {
     const isProd = process.env.NODE_ENV === 'production'
+    console.log(`isProd: ${isProd}`);
     try {
         const browser = await launch({
-            headless: true,
+            headless: isProd,
             ignoreHTTPSErrors: true,
             ...(isProd && {executablePath: CHROME_PATH})
         } as any as LaunchOptions);

@@ -73,5 +73,7 @@ export async function checkAndRunDailySearches() {
         }
     }
 
+    await scraper.destroy();
     console.log('Daily search check completed');
+    return;
 }

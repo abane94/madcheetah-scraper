@@ -4,19 +4,23 @@ import { SearchTabs } from './home/SearchTabs.tsx';
 import { LotsGrid } from './home/LotsGrid.tsx';
 import { LocationFilter } from './home/LocationFilter.tsx';
 
+type Props = {
+    lots: Lot[],
+    searches: Search[],
+    locations: string[],
+    selectedSearchId?: string,
+    selectedLocation?: string,
+    showSearchRunsLink?: boolean
+}
+
 export function LotsHomePage({
     lots,
     searches,
     locations,
     selectedSearchId,
-    selectedLocation
-}: {
-    lots: Lot[],
-    searches: Search[],
-    locations: string[],
-    selectedSearchId?: string,
-    selectedLocation?: string
-}) {
+    selectedLocation,
+    showSearchRunsLink
+}: Props) {
     // Helper function to filter and group lots in a single pass
     const filterAndGroupLots = (
         lots: Lot[],
@@ -119,6 +123,11 @@ export function LotsHomePage({
                 `}</style>
             </head>
             <body>
+                {showSearchRunsLink && (
+                    <div style={{ marginBottom: '1em' }}>
+                        <a href="/search-runs">View Recent Search Runs</a>
+                    </div>
+                )}
                 <h1>{titleText}</h1>
 
                 <SearchTabs
